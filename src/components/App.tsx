@@ -1,5 +1,5 @@
-import "./App.css";
-import TaskPanel from "./components/TaskPanel.tsx";
+import "../assets/styles/App.css";
+import TaskPanel from "./TaskPanel.tsx";
 
 function App() {
   return (
