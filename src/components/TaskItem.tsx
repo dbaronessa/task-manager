@@ -1,14 +1,15 @@
 import "../assets/styles/TaskPanel.css"
 import {Task} from "../types/task.ts";
-import useTasks from "../hooks/useTasks.ts";
 import React from "react";
 
 interface TaskItemProps {
     task: Task;
+    deleteTask: (id: number) => void;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({task}) => {
-  const {deleteTask} = useTasks();
+const TaskItem: React.FC<TaskItemProps> = ({task, deleteTask}) => {
+
+    console.log(task.id);
 
     return (
         <div className="div2">
@@ -25,9 +26,9 @@ const TaskItem: React.FC<TaskItemProps> = ({task}) => {
                             <label>{task.isCompleted}</label>
                         </div>
                     </fieldset>
-
                     <button onClick={() => deleteTask(task.id)}>Delete</button>
             </li>
+
         </div>
 );
 }

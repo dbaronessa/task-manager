@@ -6,7 +6,7 @@ const useTasks = () => {
 
   const addTask = (title: string) => {
       const newTask: Task = {
-       id: Math.round(Math.random() * 1000),
+       id: Date.now(),
        title,
        isCompleted: false,
       };
@@ -15,7 +15,7 @@ const useTasks = () => {
   };
 
   const deleteTask = (id: number) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
   return {

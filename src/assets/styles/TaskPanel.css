@@ -3,11 +3,12 @@
     height: 100%;
     display: grid;
     grid-template-columns: 2fr 1fr;
+    grid-gap: 100px;
 }
 
 .input-div {
     width: 100%;
-    height: auto;
+    height: 150px;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -18,7 +19,8 @@
 
 input {
     height: 20px;
-    background: #888888;
+    background: #f9f9f9;
+    border: 1px solid gray;
     color: black;
     font-size: 16px;
 }
