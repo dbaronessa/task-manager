@@ -13,16 +13,18 @@ function TaskPanel() {
   }
 
   return (
-      <div className="wrapper">
-        <div className="main-div">
-          <p>Add task</p>
-        </div>
+      <div  className="wrapper">
+
           <div className="input-div">
-          <input placeholder="Title" value={title}
-                 onChange={(e) => setTitle(e.target.value)}/>
-          <button onClick={addTaskButton}>Add Task</button>
-        </div>
+              <p>Add task</p>
+              <input placeholder="Title" value={title}
+                     onChange={(e) => setTitle(e.target.value)}/>
+              <button onClick={addTaskButton}>Add Task</button>
+          </div>
+          <div>
         <TaskList tasks={tasks}/>
+          </div>
+
       </div>
   );
 }
