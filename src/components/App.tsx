@@ -1,20 +1,17 @@
-import "../assets/styles/App.css";
+// App.tsx
 import TaskPanel from "./TaskPanel.tsx";
-import ThemeToggleButton from "./ThemeToggle.tsx";
-import "../assets/styles/ThemeToggleButton.css"
+import { ThemeProvider } from "../context/ThemeContext";
+import ThemeToggleButton from "./ThemeToggle.tsx"; // Импортируем ThemeProvider
 
 function App() {
-  return (
-      <>
-          <div className="theme-container">
-              <ThemeToggleButton/>
-      <TaskPanel />
-
-          </div>
-      </>
-  );
-
-
+    return (
+        <ThemeProvider>
+            <div className="theme-container">
+                <ThemeToggleButton/>
+                <TaskPanel/>
+            </div>
+        </ThemeProvider>
+    );
 }
 
 export default App;

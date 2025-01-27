@@ -1,18 +1,24 @@
-import { useState } from "react";
-import "../assets/styles/ThemeToggleButton.css";
+
+import { useContext } from "react";
+import "../assets/styles/TaskPanel.css";
+import { ThemeContext } from "../context/ThemeContext";
 
 const ThemeToggleButton = () => {
-    const [isDarkTheme, setIsDarkTheme] = useState(false);
+    const context = useContext(ThemeContext);
 
-    const handleThemeChange = () => setIsDarkTheme(!isDarkTheme);
+    if (!context) {
+        throw new Error("ThemeContext must be used within a ThemeProvider");
+    }
+
+    const { theme, toggleTheme } = context;
 
     return (
-        <div className={`theme-container ${isDarkTheme ? "dark" : "light"}`}>
+        <div className={`theme-container ${theme}`}>
             <div
-                className={`theme-toggle-button ${isDarkTheme ? "dark" : "light"}`}
-                onClick={handleThemeChange}
+                className={`theme-toggle-button ${theme}`}
+                onClick={toggleTheme}
             >
-                <div className="slider">{isDarkTheme ? "" : ""}</div>
+                <div className="slider">{theme === 'dark' ? "" : ""}</div>
             </div>
         </div>
     );
