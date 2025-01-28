@@ -7,6 +7,8 @@ export type Sort = 'name' | 'date';
 const useTasks = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>("");
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
     const addTask = (title: string) => {
         const newTask: Task = {
@@ -29,6 +31,14 @@ const useTasks = () => {
         );
     };
 
+    const updateTaskTitle = (id: number, newTitle: string) => {
+        setTasks((prev) =>
+            prev.map((task) =>
+                task.id === id ? { ...task, title: newTitle } : task
+            )
+        );
+    };
+
     const filterTask = (filter: Filter) => {
         let filteredTasks = tasks;
         switch (filter) {
@@ -46,9 +56,9 @@ const useTasks = () => {
 
     const sortTasks = (sort: Sort, filteredTasks: Task[]) => {
         let sortedTasks = [...filteredTasks];
-        if (sort === 'name') {
+        if (sort === "name") {
             sortedTasks = sortedTasks.sort((a, b) => a.title.localeCompare(b.title));
-        } else if (sort === 'date') {
+        } else if (sort === "date") {
             sortedTasks = sortedTasks.sort((a, b) => a.id - b.id);
         }
         return sortedTasks;
@@ -60,16 +70,31 @@ const useTasks = () => {
         );
     };
 
+    const openModal = (task: Task) => {
+        setSelectedTask(task);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedTask(null);
+        setIsModalOpen(false);
+    };
+
     return {
         tasks,
         addTask,
         deleteTask,
         updateTaskStatus,
+        updateTaskTitle,
         filterTask,
         sortTasks,
         searchQuery,
         setSearchQuery,
         searchTasks,
+        isModalOpen,
+        selectedTask,
+        openModal,
+        closeModal,
     };
 };
 

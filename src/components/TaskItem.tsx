@@ -5,16 +5,21 @@ interface TaskItemProps {
     task: Task;
     deleteTask: (id: number) => void;
     updateTaskStatus: (id: number) => void;
+    onTaskClick: (task: Task) => void;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, deleteTask, updateTaskStatus }) => {
-
+const TaskItem: React.FC<TaskItemProps> = ({
+                                               task,
+                                               deleteTask,
+                                               updateTaskStatus,
+                                               onTaskClick,
+                                           }) => {
     const handleCheckboxChange = () => {
         updateTaskStatus(task.id);
     };
 
     return (
-        <div className="div2">
+        <div className="div2" onClick={() => onTaskClick(task)}>
             <li>
                 <p>{task.title}</p>
                 <fieldset>
@@ -27,7 +32,14 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, deleteTask, updateTaskStatus 
                         <label>{task.isCompleted ? "Completed" : "Active"}</label>
                     </div>
                 </fieldset>
-                <button onClick={() => deleteTask(task.id)}>Delete</button>
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        deleteTask(task.id);
+                    }}
+                >
+                    Delete
+                </button>
             </li>
         </div>
     );

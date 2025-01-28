@@ -5,9 +5,25 @@ import TaskList from "./TaskList.tsx";
 import FilterDropdown from "./FilterDropDown.tsx";
 import SortDropdown from "./SortDropDown.tsx";
 import SearchInput from "./SearchInput.tsx";
+import TaskModal from "./TaskModal.tsx";
 
 function TaskPanel() {
-    const { addTask, deleteTask, updateTaskStatus, filterTask, sortTasks, searchQuery, setSearchQuery, searchTasks } = useTasks();
+    const {
+        addTask,
+        deleteTask,
+        updateTaskStatus,
+        updateTaskTitle,
+        filterTask,
+        sortTasks,
+        searchQuery,
+        setSearchQuery,
+        searchTasks,
+        isModalOpen,
+        selectedTask,
+        openModal,
+        closeModal,
+    } = useTasks();
+
     const [title, setTitle] = useState<string>("");
     const [filter, setFilter] = useState<Filter>("all");
     const [sort, setSort] = useState<Sort>("name");
@@ -31,19 +47,25 @@ function TaskPanel() {
         setSearchQuery(e.target.value);
     };
 
-
     const filteredTasks = filterTask(filter);
-
     const sortedTasks = sortTasks(sort, filteredTasks);
-
     const searchedTasks = searchTasks(searchQuery, sortedTasks);
 
     return (
         <>
+            <TaskModal
+                task={selectedTask}
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                onSave={(id, newTitle) => {
+                    updateTaskTitle(id, newTitle);
+                }}
+            />
+
             <div className="drop-down">
-            <FilterDropdown filter={filter} onFilterChange={handleFilterChange} />
-            <SortDropdown sort={sort} onSortChange={handleSortChange} />
-            <SearchInput searchQuery={searchQuery} onSearchChange={handleSearchChange} />
+                <FilterDropdown filter={filter} onFilterChange={handleFilterChange} />
+                <SortDropdown sort={sort} onSortChange={handleSortChange} />
+                <SearchInput searchQuery={searchQuery} onSearchChange={handleSearchChange} />
             </div>
             <div className="wrapper">
                 <div className="input-div">
@@ -56,9 +78,13 @@ function TaskPanel() {
                     <button onClick={addTaskButton}>Add Task</button>
                 </div>
 
-
                 <div>
-                    <TaskList tasks={searchedTasks} deleteTask={deleteTask} updateTaskStatus={updateTaskStatus} />
+                    <TaskList
+                        tasks={searchedTasks}
+                        deleteTask={deleteTask}
+                        updateTaskStatus={updateTaskStatus}
+                        onTaskClick={openModal}
+                    />
                 </div>
             </div>
         </>
