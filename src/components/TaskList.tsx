@@ -1,32 +1,21 @@
-import { Task } from "../types/task.ts";
+import React from "react";
+import { selectTasks } from "../store/slices/taskSlice";
 import TaskItem from "./TaskItem.tsx";
+import {useAppSelector} from "../store/store.ts";
 
-interface TaskListProps {
-    tasks: Task[];
-    deleteTask: (id: number) => void;
-    updateTaskStatus: (id: number) => void;
-    onTaskClick: (task: Task) => void;
-}
+const TaskList: React.FC = () => {
+    const tasks = useAppSelector(selectTasks);
 
-const TaskList: React.FC<TaskListProps> = ({
-                                               tasks,
-                                               deleteTask,
-                                               updateTaskStatus,
-                                               onTaskClick,
-                                           }) => {
+
     return (
         <div className="wrapper">
             <ul>
                 <h2>Task list</h2>
-                {tasks.map((task) => (
-                    <TaskItem
-                        key={task.id}
-                        task={task}
-                        deleteTask={deleteTask}
-                        updateTaskStatus={updateTaskStatus}
-                        onTaskClick={onTaskClick}
-                    />
-                ))}
+                {tasks.length > 0 ? (
+                    tasks.map((task) => <TaskItem key={task.id} task={task} />)
+                ) : (
+                    <p>No tasks available</p>
+                )}
             </ul>
         </div>
     );

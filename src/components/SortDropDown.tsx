@@ -1,22 +1,21 @@
-
 import React from "react";
-import { Sort } from "../hooks/useTasks";
+import { useAppDispatch, useAppSelector } from "../store/store.ts";
+import { setSort, selectSort } from "../store/slices/taskSlice";
+import { Sort } from "../store/slices/taskSlice";
 import "../assets/styles/TaskPanel.css";
 
-interface SortDropdownProps {
-    sort: Sort;
-    onSortChange: (newSort: Sort) => void;
-}
+const SortDropdown: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const sort = useAppSelector(selectSort);
 
-const SortDropdown: React.FC<SortDropdownProps> = ({ sort, onSortChange }) => {
+    const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        dispatch(setSort(event.target.value as Sort));
+    };
+
     return (
         <div>
             <label htmlFor="task-sort">Sort tasks: </label>
-            <select
-                id="task-sort"
-                value={sort}
-                onChange={(e) => onSortChange(e.target.value as Sort)}
-            >
+            <select id="task-sort" value={sort} onChange={handleSortChange}>
                 <option value="name">By Name</option>
                 <option value="date">By Date</option>
             </select>

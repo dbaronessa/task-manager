@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Task } from "../types/task.ts";
+import { useAppDispatch, useAppSelector } from "../store/store.ts";
+import { updateTaskTitle, closeModal, selectIsModalOpen, selectSelectedTask } from "../store/slices/taskSlice";
 
-interface TaskModalProps {
-    task: Task | null;
-    isOpen: boolean;
-    onClose: () => void;
-    onSave: (id: number, newTitle: string) => void;
-}
+const TaskModal: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const isOpen = useAppSelector(selectIsModalOpen);
+    const task = useAppSelector(selectSelectedTask);
 
-const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onClose, onSave }) => {
     const [newTitle, setNewTitle] = useState<string>("");
 
     useEffect(() => {
@@ -21,8 +19,8 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onClose, onSave }) 
 
     const handleSave = () => {
         if (newTitle.trim()) {
-            onSave(task.id, newTitle.trim());
-            onClose();
+            dispatch(updateTaskTitle({ id: task.id, title: newTitle.trim() }));
+            dispatch(closeModal());
         }
     };
 
@@ -37,7 +35,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onClose, onSave }) 
                     placeholder="Enter new task title"
                 />
                 <div className="modal-actions">
-                    <button onClick={onClose}>Cancel</button>
+                    <button onClick={() => dispatch(closeModal())}>Cancel</button>
                     <button onClick={handleSave}>Save</button>
                 </div>
             </div>

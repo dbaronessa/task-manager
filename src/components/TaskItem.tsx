@@ -1,25 +1,29 @@
 import React from "react";
 import { Task } from "../types/task.ts";
+import { deleteTask, updateTaskStatus, openModal } from "../store/slices/taskSlice";
+import {useAppDispatch} from "../store/store.ts";
 
 interface TaskItemProps {
     task: Task;
-    deleteTask: (id: number) => void;
-    updateTaskStatus: (id: number) => void;
-    onTaskClick: (task: Task) => void;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({
-                                               task,
-                                               deleteTask,
-                                               updateTaskStatus,
-                                               onTaskClick,
-                                           }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
+    const dispatch = useAppDispatch();
+
     const handleCheckboxChange = () => {
-        updateTaskStatus(task.id);
+        dispatch(updateTaskStatus(task.id));
+    };
+
+    const handleDelete = () => {
+        dispatch(deleteTask(task.id));
+    };
+
+    const handleEdit = () => {
+        dispatch(openModal(task));
     };
 
     return (
-        <div className="div2" onClick={() => onTaskClick(task)}>
+        <div className="div2">
             <li>
                 <p>{task.title}</p>
                 <fieldset>
@@ -32,14 +36,10 @@ const TaskItem: React.FC<TaskItemProps> = ({
                         <label>{task.isCompleted ? "Completed" : "Active"}</label>
                     </div>
                 </fieldset>
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        deleteTask(task.id);
-                    }}
-                >
-                    Delete
-                </button>
+                <div>
+                    <button onClick={handleEdit}>Edit</button>
+                    <button onClick={handleDelete}>Delete</button>
+                </div>
             </li>
         </div>
     );
