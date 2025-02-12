@@ -4,7 +4,6 @@ import {
   deleteTask,
   updateTaskStatus,
   updateTaskTitle,
-  setFilter,
   setSort,
   setSearchQuery,
   openModal,
@@ -17,7 +16,7 @@ import {
   selectSelectedTask,
   fetchTasks,
 } from "../store/slices/taskSlice";
-import { Task, Filter, Sort } from "../store/slices/taskSlice";
+import { Task, Sort } from "../store/slices/taskSlice";
 import { useEffect } from "react";
 
 const useTasks = () => {
@@ -64,7 +63,6 @@ const useTasks = () => {
     updateTaskStatus: (id: number) => dispatch(updateTaskStatus(id)),
     updateTaskTitle: (id: number, title: string) =>
       dispatch(updateTaskTitle({ id, title })),
-    setFilter: (filter: Filter) => dispatch(setFilter(filter)),
     setSort: (sort: Sort) => dispatch(setSort(sort)),
     searchQuery,
     setSearchQuery: (query: string) => dispatch(setSearchQuery(query)),

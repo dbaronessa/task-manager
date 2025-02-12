@@ -1,10 +1,10 @@
 import React from "react";
-import { selectTasks } from "../store/slices/taskSlice";
+import { selectProcessedTasks } from "../store/slices/taskSlice";
 import TaskItem from "./TaskItem.tsx";
 import { useAppSelector } from "../store/store.ts";
 
 const TaskList: React.FC = () => {
-  const tasks = useAppSelector(selectTasks);
+  const tasks = useAppSelector(selectProcessedTasks);
 
   return (
     <div className="wrapper">
