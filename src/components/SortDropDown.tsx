@@ -1,20 +1,18 @@
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../store/store.ts";
-import { selectSort, changeSort } from "../store/slices/taskSlice";
-import { Sort } from "../store/slices/taskSlice";
 
-const SortDropdown: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const sort = useAppSelector(selectSort);
+interface SortDropdownProps {
+  onChange: (sort: "name" | "date") => void;
+}
 
+const SortDropdown: React.FC<SortDropdownProps> = ({ onChange }) => {
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch(changeSort(event.target.value as Sort));
+    onChange(event.target.value as "name" | "date");
   };
 
   return (
     <div>
       <label htmlFor="task-sort">Sort tasks: </label>
-      <select id="task-sort" value={sort} onChange={handleSortChange}>
+      <select id="task-sort" onChange={handleSortChange}>
         <option value="name">By Name</option>
         <option value="date">By Date</option>
       </select>

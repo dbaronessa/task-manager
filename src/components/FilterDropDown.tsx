@@ -1,13 +1,14 @@
-import React from "react";
-import { useAppDispatch, useAppSelector } from "../store/store.ts";
-import { selectFilter, Filter, changeFilter } from "../store/slices/taskSlice";
+import { useState } from "react";
 
-const FilterDropdown: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const filter = useAppSelector(selectFilter);
+const FilterDropdown: React.FC<{ onChange: (filter: string) => void }> = ({
+  onChange,
+}) => {
+  const [filter, setFilter] = useState("all");
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch(changeFilter(event.target.value as Filter));
+    const newFilter = event.target.value;
+    setFilter(newFilter);
+    onChange(newFilter);
   };
 
   return (

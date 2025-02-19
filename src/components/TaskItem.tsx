@@ -1,48 +1,74 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Task } from "../types/task.ts";
-import { deleteTask, updateTaskStatus, openModal } from "../store/slices/taskSlice";
-import {useAppDispatch} from "../store/store.ts";
+import {
+  useUpdateTaskMutation,
+  useDeleteTaskMutation,
+  useGetTasksQuery,
+} from "../services/api";
+import TaskModal from "./TaskModal";
 
 interface TaskItemProps {
-    task: Task;
+  task: Task;
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
-    const dispatch = useAppDispatch();
+  const [updateTask, { isSuccess: isUpdated }] = useUpdateTaskMutation();
+  const [deleteTask, { isSuccess: isDeleted }] = useDeleteTaskMutation();
+  const { refetch } = useGetTasksQuery({});
+  const [isEditing, setIsEditing] = useState(false);
 
-    const handleCheckboxChange = () => {
-        dispatch(updateTaskStatus(task.id));
-    };
+  useEffect(() => {
+    if (isUpdated || isDeleted) {
+      refetch();
+    }
+  }, [isUpdated, isDeleted, refetch]);
 
-    const handleDelete = () => {
-        dispatch(deleteTask(task.id));
-    };
+  const handleCheckboxChange = async () => {
+    try {
+      await updateTask({
+        id: task.id,
+        isCompleted: !task.isCompleted,
+      }).unwrap();
+    } catch (error) {
+      console.error("Ошибка при обновлении задачи:", error);
+    }
+  };
 
-    const handleEdit = () => {
-        dispatch(openModal(task));
-    };
+  const handleDelete = async () => {
+    try {
+      await deleteTask(task.id).unwrap();
+    } catch (error) {
+      console.error("Ошибка при удалении задачи:", error);
+    }
+  };
 
-    return (
-        <div className="div2">
-            <li>
-                <p>{task.title}</p>
-                <fieldset>
-                    <div>
-                        <input
-                            type="checkbox"
-                            checked={task.isCompleted}
-                            onChange={handleCheckboxChange}
-                        />
-                        <label>{task.isCompleted ? "Completed" : "Active"}</label>
-                    </div>
-                </fieldset>
-                <div>
-                    <button onClick={handleEdit}>Edit</button>
-                    <button onClick={handleDelete}>Delete</button>
-                </div>
-            </li>
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  return (
+    <div className="div2">
+      <li>
+        <p>{task.title}</p>
+        <fieldset>
+          <input
+            type="checkbox"
+            checked={task.isCompleted}
+            onChange={handleCheckboxChange}
+          />
+          <label>{task.isCompleted ? "Completed" : "Active"}</label>
+        </fieldset>
+        <div className="task-actions">
+          <button onClick={handleEdit}>Edit</button>
+          <button onClick={handleDelete}>Delete</button>
         </div>
-    );
+      </li>
+
+      {isEditing && (
+        <TaskModal task={task} onClose={() => setIsEditing(false)} />
+      )}
+    </div>
+  );
 };
 
 export default TaskItem;

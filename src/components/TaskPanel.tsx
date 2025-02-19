@@ -1,56 +1,71 @@
 import "../assets/styles/TaskPanel.css";
 import { useState } from "react";
-import { useAppDispatch } from "../store/store.ts";
-import {
-    addTask,
-} from "../store/slices/taskSlice";
+import { useCreateTaskMutation, useGetTasksQuery } from "../services/api"; // ✅ Import RTK Query mutation
 import TaskList from "./TaskList.tsx";
 import FilterDropdown from "./FilterDropDown.tsx";
 import SortDropdown from "./SortDropDown.tsx";
 import SearchInput from "./SearchInput.tsx";
 import TaskModal from "./TaskModal.tsx";
 
-
 function TaskPanel() {
-    const dispatch = useAppDispatch();
+  const [title, setTitle] = useState<string>("");
+  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [sort, setSort] = useState<"name" | "date">("date");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedTask, setSelectedTask] = useState(null);
 
+  const [createTask, { isLoading }] = useCreateTaskMutation();
 
-    const [title, setTitle] = useState<string>("");
+  const { refetch } = useGetTasksQuery({ filter, sort, searchQuery });
 
-    const addTaskButton = () => {
-        if (title.trim()) {
-            dispatch(addTask(title));
-            setTitle("");
-        }
-    };
+  const handleAddTask = async () => {
+    if (title.trim()) {
+      try {
+        await createTask({ title }).unwrap();
+        setTitle("");
+        refetch();
+      } catch (error) {
+        console.error("Ошибка при добавлении задачи:", error);
+      }
+    }
+  };
 
+  return (
+    <>
+      <TaskModal task={selectedTask} onClose={() => setSelectedTask(null)} />
 
-    return (
-        <>
-            <TaskModal />
+      <div className="drop-down">
+        <FilterDropdown
+          onChange={(filter: string) =>
+            setFilter(filter as "all" | "active" | "completed")
+          }
+        />
+        <SortDropdown
+          onChange={(sort: string) => setSort(sort as "name" | "date")}
+        />
 
-            <div className="drop-down">
-                <FilterDropdown />
-                <SortDropdown  />
-                <SearchInput />
-            </div>
-            <div className="wrapper">
-                <div className="input-div">
-                    <h2>Add Task</h2>
-                    <input
-                        placeholder="Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                    <button onClick={addTaskButton}>Add Task</button>
-                </div>
+        <SearchInput onChange={setSearchQuery} />
+      </div>
 
-                <div>
-                    <TaskList />
-                </div>
-            </div>
-        </>
-    );
+      <div className="wrapper">
+        <div className="input-div">
+          <h2>Add Task</h2>
+          <input
+            placeholder="Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <button onClick={handleAddTask} disabled={isLoading}>
+            {isLoading ? "Adding..." : "Add Task"}
+          </button>
+        </div>
+
+        <div>
+          <TaskList filter={filter} sort={sort} searchQuery={searchQuery} />
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default TaskPanel;

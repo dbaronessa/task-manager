@@ -1,25 +1,28 @@
-import React from "react";
-import { useAppDispatch, useAppSelector } from "../store/store.ts";
-import { setSearchQuery, selectSearchQuery } from "../store/slices/taskSlice";
+import React, { useState } from "react";
 
-const SearchInput: React.FC = () => {
-    const dispatch = useAppDispatch();
-    const searchQuery = useAppSelector(selectSearchQuery);
+interface SearchInputProps {
+  onChange: (query: string) => void;
+}
 
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(setSearchQuery(event.target.value));
-    };
+const SearchInput: React.FC<SearchInputProps> = ({ onChange }) => {
+  const [searchQuery, setSearchQuery] = useState("");
 
-    return (
-        <div>
-            <input
-                type="text"
-                placeholder="Search tasks"
-                value={searchQuery}
-                onChange={handleSearchChange}
-            />
-        </div>
-    );
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+    onChange(query);
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="Search tasks"
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
+    </div>
+  );
 };
 
 export default SearchInput;
